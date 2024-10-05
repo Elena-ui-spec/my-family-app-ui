@@ -36,7 +36,7 @@ function SearchMedia() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        credentials: "include", // Send credentials like cookies
       });
 
       if (!response.ok) {
@@ -51,7 +51,7 @@ function SearchMedia() {
 
       if (data && data.items) {
         const mediaWithFileData = data.items.map((item) => {
-          const fileUrl = item.fileUrl; // Use the proxy file URL
+          const fileUrl = item.fileUrl;
           console.log("Processing media item:", item);
           console.log("Constructed FileUrl:", fileUrl);
 
@@ -73,7 +73,7 @@ function SearchMedia() {
       }
     } catch (error) {
       console.error("Error fetching media:", error);
-      alert("Eroare la preluarea datelor media. Încercați din nou mai târziu.");
+      alert("Error fetching media. Please try again later.");
       navigate("/login");
     } finally {
       setIsFetching(false);
