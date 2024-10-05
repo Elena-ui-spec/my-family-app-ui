@@ -84,10 +84,10 @@ function SearchMedia() {
     const query = searchQuery.trim();
     if (!query) {
       fetchMedia(
-        `https://localhost:7029/api/media?pageNumber=${pageNumber}&pageSize=${pageSize}`
+        `https://my-family-app.onrender.com/api/media?pageNumber=${pageNumber}&pageSize=${pageSize}`
       );
     } else {
-      const url = `https://localhost:7029/api/media/search?person=${encodeURIComponent(
+      const url = `https://my-family-app.onrender.com/api/media/search?person=${encodeURIComponent(
         query
       )}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
       fetchMedia(url);
@@ -103,10 +103,10 @@ function SearchMedia() {
     }
 
     const url = query
-      ? `https://localhost:7029/api/media/search?person=${encodeURIComponent(
+      ? `https://my-family-app.onrender.com/api/media/search?person=${encodeURIComponent(
           query
         )}&pageNumber=1&pageSize=${pageSize}`
-      : `https://localhost:7029/api/media?pageNumber=1&pageSize=${pageSize}`;
+      : `https://my-family-app.onrender.com/api/media?pageNumber=1&pageSize=${pageSize}`;
 
     fetchMedia(url);
   };
@@ -135,7 +135,7 @@ function SearchMedia() {
     setIsFetching(true);
     try {
       const response = await fetch(
-        `https://localhost:7029/api/media/${mediaToDelete}`,
+        `https://my-family-app.onrender.com/api/media/${mediaToDelete}`,
         {
           method: "DELETE",
           headers: {

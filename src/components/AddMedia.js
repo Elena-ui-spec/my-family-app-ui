@@ -29,11 +29,14 @@ function AddMedia() {
     formData.append("file", file);
 
     try {
-      const response = await fetch("https://localhost:7029/api/media/add", {
-        method: "POST",
-        credentials: "include",
-        body: formData,
-      });
+      const response = await fetch(
+        "https://my-family-app.onrender.com/api/media/add",
+        {
+          method: "POST",
+          credentials: "include",
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 401) {

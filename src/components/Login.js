@@ -27,14 +27,17 @@ function Login() {
     try {
       const encryptedPassword = encryptPassword(password);
 
-      const response = await fetch("https://localhost:7029/api/user/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password: encryptedPassword }),
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://my-family-app.onrender.com/api/user/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, password: encryptedPassword }),
+          credentials: "include",
+        }
+      );
 
       if (response.ok) {
         const { accessToken, refreshToken, user } = await response.json();

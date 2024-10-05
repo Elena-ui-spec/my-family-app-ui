@@ -55,17 +55,20 @@ function Register() {
     const encryptedPassword = encryptPassword(password);
 
     try {
-      const response = await fetch("https://localhost:7029/api/user/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password: encryptedPassword,
-          isInvited,
-        }),
-      });
+      const response = await fetch(
+        "https://my-family-app.onrender.com/api/user/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username,
+            password: encryptedPassword,
+            isInvited,
+          }),
+        }
+      );
 
       if (response.ok) {
         setModalMessage(

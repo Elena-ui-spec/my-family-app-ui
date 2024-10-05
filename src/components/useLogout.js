@@ -8,7 +8,7 @@ function useLogout() {
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("refreshToken");
 
-    fetch("https://localhost:7029/api/user/logout", {
+    fetch("https://my-family-app.onrender.com/api/user/logout", {
       method: "POST",
       credentials: "include",
     })

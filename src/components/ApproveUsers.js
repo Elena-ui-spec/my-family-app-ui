@@ -16,13 +16,16 @@ function ApproveUsers() {
   const fetchUsers = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch("https://localhost:7029/api/user/all", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      });
+      const response = await fetch(
+        "https://my-family-app.onrender.com/api/user/all",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -42,7 +45,7 @@ function ApproveUsers() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "https://localhost:7029/api/user/approve-user",
+        "https://my-family-app.onrender.com/api/user/approve-user",
         {
           method: "POST",
           headers: {
@@ -76,7 +79,7 @@ function ApproveUsers() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "https://localhost:7029/api/user/delete-user",
+        "https://my-family-app.onrender.com/user/delete-user",
         {
           method: "POST",
           headers: {
