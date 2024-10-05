@@ -122,7 +122,9 @@ function SearchMedia() {
   };
 
   const handleMediaClick = (mediaItem) => {
-    setSelectedMedia(mediaItem);
+    if (mediaItem) {
+      setSelectedMedia(mediaItem);
+    }
   };
 
   const closeModal = () => {
@@ -218,8 +220,8 @@ function SearchMedia() {
               >
                 <p>
                   <strong>Persoane:</strong>{" "}
-                  {item.persons.join(", ").length > 100
-                    ? item.persons.join(", ").substring(0, 100) + "..."
+                  {item.persons.join(", ").length > 50
+                    ? `${item.persons.join(", ").substring(0, 50)}...`
                     : item.persons.join(", ")}
                 </p>
 
@@ -283,14 +285,14 @@ function SearchMedia() {
 
                 <p>
                   <strong>Descriere:</strong>{" "}
-                  {item.description.length > 100
-                    ? item.description.substring(0, 100) + "..."
+                  {item.description.length > 50
+                    ? `${item.description.substring(0, 50)}...`
                     : item.description}
                 </p>
                 <p>
                   <strong>Poveste:</strong>{" "}
-                  {item.story && item.story.length > 100
-                    ? item.story.substring(0, 100) + "..."
+                  {item.story && item.story.length > 50
+                    ? `${item.story.substring(0, 50)}...`
                     : item.story}
                 </p>
               </div>
@@ -327,7 +329,7 @@ function SearchMedia() {
         </div>
       </div>
 
-      {selectedMedia && (
+      {selectedMedia && selectedMedia.fileType && (
         <div className="search-media-modal-overlay" onClick={closeModal}>
           <div
             className="search-media-modal-content"
@@ -341,6 +343,7 @@ function SearchMedia() {
                 <strong>Persoane:</strong> {selectedMedia.persons.join(", ")}
               </div>
             </div>
+
             {selectedMedia.fileType.startsWith("image/") && (
               <img
                 src={selectedMedia.FileUrl}
@@ -353,6 +356,7 @@ function SearchMedia() {
                 }
               />
             )}
+
             {selectedMedia.fileType.startsWith("video/") && (
               <video
                 controls
@@ -371,6 +375,7 @@ function SearchMedia() {
                 Browser-ul dumneavoastră nu suportă elementul video.
               </video>
             )}
+
             {selectedMedia.fileType.startsWith("audio/") && (
               <audio
                 controls
@@ -389,6 +394,7 @@ function SearchMedia() {
                 Browser-ul dumneavoastră nu suportă elementul audio.
               </audio>
             )}
+
             <div className="search-media-modal-description-container">
               <div className="search-media-modal-description">
                 <strong>Descriere:</strong>{" "}
