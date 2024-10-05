@@ -1,0 +1,111 @@
+.add-media-parent-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
+.add-media-container {
+  width: 80%;
+  max-width: 800px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.title {
+  margin-bottom: 30px;
+  font-size: 24px;
+  color: #333;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  width: 100%;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.input-label {
+  font-weight: bold;
+  width: 150px;
+  text-align: right;
+  margin-right: 10px;
+}
+
+.input-field {
+  flex: 1;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+}
+
+.description-field {
+  height: 100px;
+  resize: vertical;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover:enabled {
+  background-color: #218838;
+}
+
+.submit-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.footer-controls {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.back-button {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
+.loading-indicator {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #555;
+}

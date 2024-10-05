@@ -1,0 +1,25 @@
+.search-page-container {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.logout-button {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  padding: 10px 20px;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+.logout-button:hover {
+  background-color: #e60000;
+}
