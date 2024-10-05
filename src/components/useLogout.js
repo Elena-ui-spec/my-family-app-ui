@@ -8,7 +8,7 @@ function useLogout() {
     sessionStorage.removeItem("accessToken");
     sessionStorage.removeItem("refreshToken");
 
-    fetch("https://my-family-app.onrender.com/api/user/logout", {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/api/user/logout`, {
       method: "POST",
       credentials: "include",
     })
@@ -16,11 +16,11 @@ function useLogout() {
         if (!response.ok) {
           throw new Error("Logout-ul a eșuat.");
         }
-        navigate("/login");
+        navigate("/");
         window.location.reload();
       })
       .catch(() => {
-        navigate("/login");
+        navigate("/");
         window.location.reload();
       });
   };

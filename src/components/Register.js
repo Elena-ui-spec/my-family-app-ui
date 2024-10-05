@@ -13,8 +13,8 @@ function Register() {
   const navigate = useNavigate();
 
   const encryptPassword = (password) => {
-    const key = CryptoJS.enc.Utf8.parse("f98hf73nGkN4Lc5pTv9P7Xg3dN8kR6q7");
-    const iv = CryptoJS.enc.Utf8.parse("jG9pT7x8QwR2Mz1v");
+    const key = CryptoJS.enc.Utf8.parse(process.env.REACT_APP_SECRET_KEY);
+    const iv = CryptoJS.enc.Utf8.parse(process.env.REACT_APP_IV_KEY);
     return CryptoJS.AES.encrypt(password, key, { iv: iv }).toString();
   };
 
@@ -25,21 +25,32 @@ function Register() {
     const hasNumber = /\d/.test(password);
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
 
+    let errorMessage = [];
+
     if (password.length < minLength) {
-      return `Parola trebuie să aibă cel puțin ${minLength} caractere.`;
+      errorMessage.push(`parola să aibă cel puțin ${minLength} caractere`);
     }
     if (!hasUpperCase) {
-      return "Parola trebuie să conțină cel puțin o literă mare.";
+      errorMessage.push("parola să conțină cel puțin o literă mare (A-Z)");
     }
     if (!hasLowerCase) {
-      return "Parola trebuie să conțină cel puțin o literă mică.";
+      errorMessage.push("parola să conțină cel puțin o literă mică (a-z)");
     }
     if (!hasNumber) {
-      return "Parola trebuie să conțină cel puțin o cifră.";
+      errorMessage.push("parola să conțină cel puțin o cifră (0-9)");
     }
     if (!hasSpecialChar) {
-      return "Parola trebuie să conțină cel puțin un caracter special.";
+      errorMessage.push(
+        "parola să conțină cel puțin un caracter special (de exemplu: @, #, $, etc.)"
+      );
     }
+
+    if (errorMessage.length > 0) {
+      return `Pentru a fi sigură, vă rugăm să respectați următoarele cerințe: ${errorMessage.join(
+        ", "
+      )}.`;
+    }
+
     return "";
   };
 
@@ -56,7 +67,7 @@ function Register() {
 
     try {
       const response = await fetch(
-        "https://my-family-app.onrender.com/api/user/register",
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/register`,
         {
           method: "POST",
           headers: {

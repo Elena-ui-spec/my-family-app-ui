@@ -17,7 +17,7 @@ function ApproveUsers() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "https://my-family-app.onrender.com/api/user/all",
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/all`,
         {
           method: "GET",
           headers: {
@@ -45,7 +45,7 @@ function ApproveUsers() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "https://my-family-app.onrender.com/api/user/approve-user",
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/approve-user`,
         {
           method: "POST",
           headers: {
@@ -79,7 +79,7 @@ function ApproveUsers() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        "https://my-family-app.onrender.com/user/delete-user",
+        `${process.env.REACT_APP_BACKEND_URL}/api/user/delete-user`,
         {
           method: "POST",
           headers: {

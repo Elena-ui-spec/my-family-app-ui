@@ -10,39 +10,59 @@ function Login() {
   const [modalMessage, setModalMessage] = useState("");
   const navigate = useNavigate();
 
+  // Reset username and password when component loads
   useEffect(() => {
     setUsername("");
     setPassword("");
   }, []);
 
+  // Function to encrypt the password using the SECRET_KEY and IV_KEY from environment variables
   const encryptPassword = (password) => {
-    const key = CryptoJS.enc.Utf8.parse("f98hf73nGkN4Lc5pTv9P7Xg3dN8kR6q7");
-    const iv = CryptoJS.enc.Utf8.parse("jG9pT7x8QwR2Mz1v");
-    return CryptoJS.AES.encrypt(password, key, { iv: iv }).toString();
+    const key = CryptoJS.enc.Utf8.parse(process.env.REACT_APP_SECRET_KEY); // Load the secret key
+    const iv = CryptoJS.enc.Utf8.parse(process.env.REACT_APP_IV_KEY); // Load the IV key
+    return CryptoJS.AES.encrypt(password, key, { iv: iv }).toString(); // Encrypt the password
   };
 
+  // Login function handling the form submission
   const handleLogin = async (e) => {
     e.preventDefault();
 
     try {
+      // Encrypt the password before sending
       const encryptedPassword = encryptPassword(password);
 
-      const response = await fetch(
-        "https://my-family-app.onrender.com/api/user/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, password: encryptedPassword }),
-          credentials: "include",
-        }
-      );
+      // Fetch the backend URL from the environment variables
+      const backendUrl = process.env.REACT_APP_BACKEND_URL;
 
+      // Log the backend URL for debugging purposes
+      console.log("Backend URL:", backendUrl);
+
+      // Check if backend URL exists (to debug potential issues)
+      if (!backendUrl) {
+        setModalMessage(
+          "URL-ul backend nu a fost setat corect. Verificați fișierul .env."
+        );
+        return;
+      }
+
+      // Send login request to the backend
+      const response = await fetch(`${backendUrl}/api/user/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password: encryptedPassword }), // Send username and encrypted password
+        credentials: "include",
+      });
+
+      // Handle the response from the backend
       if (response.ok) {
         const { accessToken, refreshToken, user } = await response.json();
-        console.log(user);
+
+        console.log("User response:", user); // Debug the user response
+
         if (user && user.username) {
+          // Store tokens and user information in session storage
           sessionStorage.setItem("accessToken", accessToken);
           sessionStorage.setItem("refreshToken", refreshToken);
           sessionStorage.setItem(
@@ -54,11 +74,13 @@ function Login() {
             })
           );
 
+          // Dispatch storage event (if needed)
           window.dispatchEvent(new Event("storage"));
 
-          if (user.IsAdmin) {
+          // Redirect based on user role
+          if (user.isAdmin) {
             navigate("/admin");
-          } else if (user.IsApproved) {
+          } else if (user.isApproved) {
             navigate("/user");
           } else {
             setModalMessage("Ne pare rău, nu ați fost aprobat încă.");
@@ -72,13 +94,14 @@ function Login() {
         );
       }
     } catch (error) {
-      console.error("Eroare la autentificare:", error);
+      console.error("Eroare la autentificare:", error); // Log error for debugging
       setModalMessage(
         "Autentificare eșuată din cauza unei erori neașteptate. Vă rugăm să încercați din nou."
       );
     }
   };
 
+  // Function to close the modal
   const closeModal = () => {
     setModalMessage("");
   };

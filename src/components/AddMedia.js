@@ -30,7 +30,7 @@ function AddMedia() {
 
     try {
       const response = await fetch(
-        "https://my-family-app.onrender.com/api/media/add",
+        `${process.env.REACT_APP_BACKEND_URL}/api/media/add`,
         {
           method: "POST",
           credentials: "include",
@@ -43,7 +43,9 @@ function AddMedia() {
           navigate("/login");
         } else {
           const errorMessage = await response.text();
-          setModalMessage(`Încărcarea fișierului a eșuat: ${errorMessage}`);
+          setModalMessage(
+            `Încărcarea fișierului a eșuat. Asigurați-va că ați completat toate câmpurile și că aveți conexiune la internet.`
+          );
         }
         return;
       }
