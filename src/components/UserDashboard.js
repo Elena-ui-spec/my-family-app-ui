@@ -9,7 +9,7 @@ function UserDashboard() {
 
   return (
     <div className="user-dashboard-container">
-      <h2 className="dashboard-title">User Dashboard</h2>
+      <h2 className="dashboard-title">Utilizator</h2>
       <div className="button-container">
         <button
           className="dashboard-button"
