@@ -100,9 +100,70 @@
 
 .footer-controls {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   margin-top: 20px;
+  margin-bottom: 80px; /* clear space above the fixed back button */
+}
+
+.pagination-tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.go-to-page {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.go-to-page-input {
+  width: 70px;
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.go-to-page-button {
+  padding: 8px 14px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.go-to-page-button:hover {
+  background-color: #0056b3;
+}
+
+.page-size-control {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.page-size-control select {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .footer-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .pagination-controls,
+  .pagination-tools {
+    justify-content: center;
+  }
 }
 
 .back-button {

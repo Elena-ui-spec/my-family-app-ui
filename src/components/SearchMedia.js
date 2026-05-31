@@ -4,21 +4,26 @@ import "./SearchMedia.css";
 import "./SearchMediaModal.css";
 import useLogout from "./useLogout";
 
+const PAGE_SIZE_OPTIONS = [9, 18, 30, 60];
+
 function SearchMedia() {
-  const [searchQuery, setSearchQuery] = useState("");
+  const [personQuery, setPersonQuery] = useState(""); // "după persoană sau descriere"
+  const [storyQuery, setStoryQuery] = useState(""); // "după poveste"
+  const [searchMode, setSearchMode] = useState("all"); // "all" | "person" | "story"
+  const [activeQuery, setActiveQuery] = useState(""); // the submitted term currently driving results
   const [media, setMedia] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [pageSize, setPageSize] = useState(9);
+  const [pageInput, setPageInput] = useState(""); // "go to page" field
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [mediaToDelete, setMediaToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [mediaLoadingStates, setMediaLoadingStates] = useState({}); // State to track loading for each media
-  const [lastSearchQuery, setLastSearchQuery] = useState("");
   const logout = useLogout();
   const navigate = useNavigate();
-  const pageSize = 9;
 
   useEffect(() => {
     const user = JSON.parse(sessionStorage.getItem("user"));
@@ -80,45 +85,63 @@ function SearchMedia() {
     }
   };
 
+  // Build the request URL for the currently active search mode.
+  const buildUrl = () => {
+    const base = process.env.REACT_APP_BACKEND_URL;
+    const paging = `pageNumber=${pageNumber}&pageSize=${pageSize}`;
+
+    if (searchMode === "person" && activeQuery) {
+      return `${base}/api/media/search?person=${encodeURIComponent(
+        activeQuery
+      )}&${paging}`;
+    }
+    if (searchMode === "story" && activeQuery) {
+      return `${base}/api/media/search/story?story=${encodeURIComponent(
+        activeQuery
+      )}&${paging}`;
+    }
+    return `${base}/api/media?${paging}`;
+  };
+
+  // Refetch whenever the page, page size, or active search changes.
   useEffect(() => {
-    const query = searchQuery.trim();
-    if (!query) {
-      fetchMedia(
-        `${process.env.REACT_APP_BACKEND_URL}/api/media?pageNumber=${pageNumber}&pageSize=${pageSize}`
-      );
-    } else {
-      const url = `${
-        process.env.REACT_APP_BACKEND_URL
-      }/api/media/search?person=${encodeURIComponent(
-        query
-      )}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
-      fetchMedia(url);
-    }
-  }, [pageNumber]);
+    fetchMedia(buildUrl());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNumber, pageSize, searchMode, activeQuery]);
 
-  const handleSearch = async () => {
-    const query = searchQuery.trim();
+  const handlePersonSearch = () => {
+    const query = personQuery.trim();
+    setStoryQuery("");
+    setSearchMode(query ? "person" : "all");
+    setActiveQuery(query);
+    setPageNumber(1);
+  };
 
-    if (query !== lastSearchQuery) {
-      setPageNumber(1);
-      setLastSearchQuery(query);
-    }
-
-    const url = query
-      ? `${
-          process.env.REACT_APP_BACKEND_URL
-        }/api/media/search?person=${encodeURIComponent(
-          query
-        )}&pageNumber=1&pageSize=${pageSize}`
-      : `${process.env.REACT_APP_BACKEND_URL}/api/media?pageNumber=1&pageSize=${pageSize}`;
-
-    fetchMedia(url);
+  const handleStorySearch = () => {
+    const query = storyQuery.trim();
+    setPersonQuery("");
+    setSearchMode(query ? "story" : "all");
+    setActiveQuery(query);
+    setPageNumber(1);
   };
 
   const handlePageChange = (newPageNumber) => {
     if (newPageNumber > 0 && newPageNumber <= totalPages) {
       setPageNumber(newPageNumber);
     }
+  };
+
+  const handlePageSizeChange = (e) => {
+    setPageSize(Number(e.target.value));
+    setPageNumber(1); // avoid landing on a now-out-of-range page
+  };
+
+  const handleGoToPage = () => {
+    const target = parseInt(pageInput, 10);
+    if (!Number.isNaN(target)) {
+      handlePageChange(target);
+    }
+    setPageInput("");
   };
 
   const handleMediaClick = (mediaItem) => {
@@ -195,13 +218,27 @@ function SearchMedia() {
       <div className="search-bar-container">
         <input
           type="text"
-          placeholder="Căutați după persoană sau element din descriere"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Caută după persoană sau descriere"
+          value={personQuery}
+          onChange={(e) => setPersonQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handlePersonSearch()}
           className="search-input"
         />
-        <button onClick={handleSearch} className="search-button">
-          Căutare
+        <button onClick={handlePersonSearch} className="search-button">
+          Caută după persoană
+        </button>
+      </div>
+      <div className="search-bar-container">
+        <input
+          type="text"
+          placeholder="Caută după cuvinte din poveste"
+          value={storyQuery}
+          onChange={(e) => setStoryQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleStorySearch()}
+          className="search-input"
+        />
+        <button onClick={handleStorySearch} className="search-button">
+          Caută după poveste
         </button>
       </div>
 
@@ -234,6 +271,7 @@ function SearchMedia() {
                     src={item.FileUrl}
                     alt={item.description}
                     className="media-thumbnail"
+                    loading="lazy" // defer off-screen images so large pages stay smooth
                     onLoad={() => setLoadingState(item.id, false)} // Set loading to false when image loads
                     onError={(e) => {
                       console.error(
@@ -312,6 +350,12 @@ function SearchMedia() {
       <div className="footer-controls">
         <div className="pagination-controls">
           <button
+            onClick={() => handlePageChange(1)}
+            disabled={pageNumber === 1}
+          >
+            &laquo; Prima
+          </button>
+          <button
             onClick={() => handlePageChange(pageNumber - 1)}
             disabled={pageNumber === 1}
           >
@@ -326,6 +370,41 @@ function SearchMedia() {
           >
             Următor
           </button>
+          <button
+            onClick={() => handlePageChange(totalPages)}
+            disabled={pageNumber === totalPages}
+          >
+            Ultima &raquo;
+          </button>
+        </div>
+
+        <div className="pagination-tools">
+          <div className="go-to-page">
+            <input
+              type="number"
+              min="1"
+              max={totalPages}
+              value={pageInput}
+              placeholder="Pagina"
+              onChange={(e) => setPageInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleGoToPage()}
+              className="go-to-page-input"
+            />
+            <button onClick={handleGoToPage} className="go-to-page-button">
+              Mergi
+            </button>
+          </div>
+
+          <label className="page-size-control">
+            Pe pagină:
+            <select value={pageSize} onChange={handlePageSizeChange}>
+              {PAGE_SIZE_OPTIONS.map((size) => (
+                <option key={size} value={size}>
+                  {size}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
       </div>
 
